@@ -1,0 +1,64 @@
+<html>
+    <header>
+
+    </header>
+    <body>
+        <h1>mongo like db using json documents</h1>
+        <textarea id="content" name="content" rows="15" cols="50">
+            put here your json to save
+        </textarea>
+        <button onclick="save()">save</button>
+        <h1>list of saved documents</h1>
+        <ul id ="list">
+        </ul>
+        <script>
+            let fetchAll = () => {
+                let options = {
+                            method: 'GET',
+                            headers: {
+                            'Content-Type': 'application/json'
+                            }
+                }
+                fetch('http://localhost:3000/list', options)
+                .then(response => {
+                        response.json().then(data => {
+                            console.log(data)
+                            document.getElementById("list").innerHTML = ''
+                            data.forEach(d => {
+                                document.getElementById("list").innerHTML += ('<li>' + JSON.stringify(d) + '</li>')
+                            })
+                        }).catch(e => console.log(e))
+                })
+                .catch(error => {
+                        console.error(error)
+                        alert('an error occcured during saving : ' + error)
+                })
+            }
+            let save = () => {
+                let content = document.getElementById("content").value
+                try {
+                    console.log('saving ... ' + content)
+                    let json = JSON.parse(content)
+                    let options = {
+                            method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(json)
+                        }
+                    fetch('http://localhost:3000/save', options)
+                    .then(response => {
+                        response.text().then(data => console.log(data)).catch(e => console.log(e))
+                        fetchAll()
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        alert('an error occcured during saving : ' + error)
+                    })
+                } catch(e) {
+                    alert('invalid json')
+                }
+            }
+        </script>
+    </body>
+</html>
