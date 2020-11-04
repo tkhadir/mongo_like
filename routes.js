@@ -3,10 +3,10 @@ const db = require('./db')
 const path = require('path')
 module.exports = (app) => {
     db.init()
-    let checkup$ = new rxjs.Subject()
+    let home$ = new rxjs.Subject()
 
-    app.get('/', (req, res) => checkup$.next([req, res]))
-    checkup$
+    app.get('/', (req, res) => home$.next([req, res]))
+    home$
     .subscribe((args) => {
             let [req, res] = args
             res.sendFile(path.join(__dirname + '/index.html'))
